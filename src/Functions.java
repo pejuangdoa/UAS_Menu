@@ -20,7 +20,7 @@ public class Functions {
 
     // b. menampilkan seluruh menu
     static void allMenu(boolean showSubmenu) {
-        System.out.println("\n=== All Menu ===");
+        System.out.println("\n=== Struktur Menu ===");
         for (int i = 0; i < root.children.size(); i++) {
             MenuNode child = root.children.get(i);
             System.out.println((i + 1) + ". " + child.name);
@@ -35,21 +35,23 @@ public class Functions {
     // a. input menu baru
     static void addMenu() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Pilih menu untuk menambah submenu:");
+        System.out.println("Pilih Menu yang akan ditambahkan submenu:");
         allMenu(false);
-        System.out.println("0. Tambah menu baru");
+        System.out.println("0. Tambahkan menu baru");
 
-        System.out.print("\nMasukkan pilihan: ");
+        System.out.print("\nMasukkan Pilihan: ");
         int choice = scanner.nextInt();
 
         if (choice == 0) {
-            //TODO: buat fitur tambah menu
-            System.out.println("fitur belum dibuat");
+            System.out.print("\nMasukkan nama menu: ");
+            String menuName = scanner.next();
+            root.addChild(new MenuNode(menuName));
         } else if (choice > 0 && choice <= root.children.size()) {
-            // TODO: buat fitur tambah submenu
-            System.out.println("fitur belum dibuat");
+            System.out.print("\nMasukkan nama submenu: ");
+            String submenuName = scanner.next();
+            root.children.get(choice - 1).addChild(new MenuNode(submenuName));
         } else {
-            System.out.println("Pilihan tidak valid");
+            System.out.println("pilihan tidak valid");
             addMenu();
         }
 
@@ -57,13 +59,41 @@ public class Functions {
 
     // c. mencari menu tertentu
     static void searchMenu() {
-        // TODO: buat fitur cari menu
-        System.out.println("fitur belum dibuat");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("\nMasukkan nama menu yang ingin dicari: ");
+        String target = scanner.next();
+
+        boolean ditemukan = false;
+        System.out.println("\n--- Hasil Pencarian ---");
+
+        for (int i = 0; i < root.children.size(); i++) {
+            MenuNode parent = root.children.get(i);
+
+            if (parent.name.equalsIgnoreCase(target)) {
+                System.out.println("Ditemukan: \"" + parent.name + "\" merupakan Menu Utama ke-" + (i + 1));
+                ditemukan = true;
+            }
+
+            for (int j = 0; j < parent.children.size(); j++) {
+                MenuNode submenu = parent.children.get(j);
+                if (submenu.name.equalsIgnoreCase(target)) {
+                    System.out.println("Ditemukan: \"" + submenu.name + "\" merupakan Submenu dari \"" + parent.name
+                            + "\" (" + (i + 1) + (char) ('A' + j) + ")");
+                    ditemukan = true;
+                }
+            }
+        }
+
+        if (!ditemukan) {
+            System.out.println("Menu \"" + target + "\" tidak ditemukan dalam sistem.");
+        }
     }
 
     // d. mengurutkan menu secara alfabetis
     static void sortMenu() {
-        // TODO: buat fitur urutkan menu
-        System.out.println("fitur belum dibuat");
+        root.children.sort((a, b) -> a.name.compareTo(b.name));
+        for (MenuNode child : root.children) {
+            child.children.sort((a, b) -> a.name.compareTo(b.name));
+        }
     }
 }
